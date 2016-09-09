@@ -115,7 +115,9 @@ for root, dirs, files in os.walk("./All Data"):
 			AssessmentBeginRow = row # row where new assesment starts
 			ChapterEndRow = -1 # row where chapter ends (if completed)
 			AssessmentEndRow = -1 # row where the assessment ends (if completed)
-			startSentenceTime = ""
+			SentenceBeginRow = row # row where new sentence starts
+			sentenceStartTime = ""
+			sentenceElapsedTime = ""
 				
 			for child in root:
 				displayMenuCount = 0 # number of "Display Menu" actions read
@@ -348,6 +350,14 @@ for root, dirs, files in os.walk("./All Data"):
 					manipulationSentence = input.find('Manipulation_Sentence').text
 					inputText = "Manipulation Sentence: " + manipulationSentence + "\nSentence Number: " + sentenceNum + "\nSentence Text: " + sentenceText
 
+					if sentenceElapsedTime != "":
+						for i in range(SentenceBeginRow, row):
+							worksheet.write(i, SentenceTimeIndex, str(sentenceElapsedTime))
+
+					SentenceBeginRow = row
+					sentenceStartTime = ""
+					sentenceElapsedTime = ""
+
 				elif action == "Load Step":
 					input = child.find('Input')
 					stepNum = input.find('Step_Number').text
@@ -464,7 +474,6 @@ for root, dirs, files in os.walk("./All Data"):
 							prevSentence = int(sentenceNumber) # current sentence is the now previous sentence
 							userStep = 1
 							sentenceOrder += 1;
-							startSentenceTime = ""
 
 						# Write Sentence Order column
 						worksheet.write(row, SentenceOrderIndex, sentenceOrder)
@@ -515,12 +524,11 @@ for root, dirs, files in os.walk("./All Data"):
 						time = timeStamp.find('Time').text
 						worksheet.write(row, TimeIndex, time)
 
-						if startSentenceTime == "":
-							startSentenceTime = time
-
-						# Write Sentence Time column
-						elapsedTime = datetime.strptime(time, FMT) - datetime.strptime(startSentenceTime, FMT)
-						worksheet.write(row, SentenceTimeIndex, str(elapsedTime))
+						if sentenceStartTime == "":
+							sentenceStartTime = time
+						
+						else:
+							sentenceElapsedTime = datetime.strptime(time, FMT) - datetime.strptime(sentenceStartTime, FMT)
 				
 				# Write Chapter Status column
 				if ChapterEndRow != -1:
