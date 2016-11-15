@@ -432,8 +432,9 @@ def write_input(child, worksheet):
             input_list.append(input.text)
 
     worksheet.write(row, col, ", ".join(input_list))
-
-    previous_action = action
+    
+    if action != "Updated Skill Value":
+        previous_action = action
 
 # Manipulation Context
 def write_manipulation_context(context, worksheet):
