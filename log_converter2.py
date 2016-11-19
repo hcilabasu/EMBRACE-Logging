@@ -255,6 +255,9 @@ def write_manipulation_input(action, input, child, worksheet):
         object = input.find("Object").text
         animate_action = input.find("Animate_Action").text
         worksheet.write(row, col, "Object: {0}; Animate Action: {1}".format(object, animate_action))
+
+        if previous_action == "Error Feedback Noise":
+            user_step += 1
     elif action == "Tap Object":
         object = input.find("Object").text
         worksheet.write(row, col, "Object: {0}".format(object))
@@ -288,6 +291,9 @@ def write_manipulation_navigation_input(action, input, child, worksheet):
         step_number = input.find("Step_Number").text
         step_type = input.find("Step_Type").text
         worksheet.write(row, col, "Step Number: {0}; Step Type: {1}".format(step_number, step_type))
+
+        if previous_action == "Error Feedback Noise":
+            user_step += 1
     elif action == "Load Sentence":
         sentence_number = input.find("Sentence_Number").text
         
@@ -377,6 +383,8 @@ def write_assessment_navigation_input(action, input, child, worksheet):
 
 # Input for ITS logging
 def write_ITS_input(action, input, child, worksheet):
+    global user_step
+    
     col = WORKSHEET_LABELS.index("Input")
     
     if action == "Updated Skill Value":
@@ -397,9 +405,11 @@ def write_ITS_input(action, input, child, worksheet):
     elif action == "Provide Syntax Error Feedback":
         simpler_sentence = input.find("Simpler_Sentence").text
         worksheet.write(row, col, "Simpler Sentence: {0}".format(simpler_sentence))
-    elif action == "Provide Usability Error Fedback":
-        animated_items = input.find("Animatd_Items").text
+    elif action == "Provide Usability Error Feedback":
+        animated_items = input.find("Animated_Items").text
         worksheet.write(row, col, "Animated Items: {0}".format(animated_items))
+
+        user_step += 1
 
 # Input
 def write_input(child, worksheet):
