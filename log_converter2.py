@@ -35,6 +35,10 @@ WORKSHEET_LABELS = [
                         "Question Number",
                         "Verification",
                         "Error Type",
+                        "Skill Type",
+                        "Skill Name",
+                        "Previous Skill Value",
+                        "New Skill Value",
                         "User Step",
                         "Chapter Status",
                         "Assessment Status",
@@ -381,6 +385,28 @@ def write_assessment_navigation_input(action, input, child, worksheet):
         assessment_end_row = row
         write_assessment_status(worksheet)
 
+# Skill Type, Skill Name, Previous Skill Value, and New Skill Value
+def write_skill_update(skill_name, previous_skill_value, new_skill_value, worksheet):
+    col = WORKSHEET_LABELS.index("Skill Type")
+
+    skill_type = "Vocabulary"
+
+    if skill_name == "Usability":
+        skill_type = "Usability"
+    elif skill_name.isdigit():
+        skill_type = "Syntax"
+
+    worksheet.write(row, col, skill_type)
+
+    col = WORKSHEET_LABELS.index("Skill Name")
+    worksheet.write(row, col, skill_name)
+
+    col = WORKSHEET_LABELS.index("Previous Skill Value")
+    worksheet.write(row, col, previous_skill_value)
+
+    col = WORKSHEET_LABELS.index("New Skill Value")
+    worksheet.write(row, col, new_skill_value)
+
 # Input for ITS logging
 def write_ITS_input(action, input, child, worksheet):
     global user_step
@@ -392,6 +418,8 @@ def write_ITS_input(action, input, child, worksheet):
         previous_skill_value = input.find("Previous_Skill_Value").text
         new_skill_value = input.find("New_Skill_Value").text
         worksheet.write(row, col, "Skill Name: {0}; Previous Skill Value: {1}; New Skill Value: {2}".format(skill_name, previous_skill_value, new_skill_value))
+    
+        write_skill_update(skill_name, previous_skill_value, new_skill_value, worksheet)
     elif action == "Adapted Vocabulary Introduction":
         extra_vocabulary = input.find("Extra_Vocabulary").text
         worksheet.write(row, col, "Extra Vocabulary: {0}".format(extra_vocabulary))
